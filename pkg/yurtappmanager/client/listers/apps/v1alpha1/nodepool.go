@@ -26,10 +26,13 @@ import (
 )
 
 // NodePoolLister helps list NodePools.
+// All objects returned here must be treated as read-only.
 type NodePoolLister interface {
 	// List lists all NodePools in the indexer.
+	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.NodePool, err error)
 	// Get retrieves the NodePool from the index for a given name.
+	// Objects returned here must be treated as read-only.
 	Get(name string) (*v1alpha1.NodePool, error)
 	NodePoolListerExpansion
 }
