@@ -19,8 +19,6 @@ limitations under the License.
 package fake
 
 import (
-	"context"
-
 	v1alpha1 "github.com/openyurtio/yurt-app-manager-api/pkg/yurtappmanager/apis/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
@@ -41,7 +39,7 @@ var uniteddeploymentsResource = schema.GroupVersionResource{Group: "apps.openyur
 var uniteddeploymentsKind = schema.GroupVersionKind{Group: "apps.openyurt.io", Version: "v1alpha1", Kind: "UnitedDeployment"}
 
 // Get takes name of the unitedDeployment, and returns the corresponding unitedDeployment object, and an error if there is any.
-func (c *FakeUnitedDeployments) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.UnitedDeployment, err error) {
+func (c *FakeUnitedDeployments) Get(name string, options v1.GetOptions) (result *v1alpha1.UnitedDeployment, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewGetAction(uniteddeploymentsResource, c.ns, name), &v1alpha1.UnitedDeployment{})
 
@@ -52,7 +50,7 @@ func (c *FakeUnitedDeployments) Get(ctx context.Context, name string, options v1
 }
 
 // List takes label and field selectors, and returns the list of UnitedDeployments that match those selectors.
-func (c *FakeUnitedDeployments) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.UnitedDeploymentList, err error) {
+func (c *FakeUnitedDeployments) List(opts v1.ListOptions) (result *v1alpha1.UnitedDeploymentList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewListAction(uniteddeploymentsResource, uniteddeploymentsKind, c.ns, opts), &v1alpha1.UnitedDeploymentList{})
 
@@ -74,14 +72,14 @@ func (c *FakeUnitedDeployments) List(ctx context.Context, opts v1.ListOptions) (
 }
 
 // Watch returns a watch.Interface that watches the requested unitedDeployments.
-func (c *FakeUnitedDeployments) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeUnitedDeployments) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(uniteddeploymentsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a unitedDeployment and creates it.  Returns the server's representation of the unitedDeployment, and an error, if there is any.
-func (c *FakeUnitedDeployments) Create(ctx context.Context, unitedDeployment *v1alpha1.UnitedDeployment, opts v1.CreateOptions) (result *v1alpha1.UnitedDeployment, err error) {
+func (c *FakeUnitedDeployments) Create(unitedDeployment *v1alpha1.UnitedDeployment) (result *v1alpha1.UnitedDeployment, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewCreateAction(uniteddeploymentsResource, c.ns, unitedDeployment), &v1alpha1.UnitedDeployment{})
 
@@ -92,7 +90,7 @@ func (c *FakeUnitedDeployments) Create(ctx context.Context, unitedDeployment *v1
 }
 
 // Update takes the representation of a unitedDeployment and updates it. Returns the server's representation of the unitedDeployment, and an error, if there is any.
-func (c *FakeUnitedDeployments) Update(ctx context.Context, unitedDeployment *v1alpha1.UnitedDeployment, opts v1.UpdateOptions) (result *v1alpha1.UnitedDeployment, err error) {
+func (c *FakeUnitedDeployments) Update(unitedDeployment *v1alpha1.UnitedDeployment) (result *v1alpha1.UnitedDeployment, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateAction(uniteddeploymentsResource, c.ns, unitedDeployment), &v1alpha1.UnitedDeployment{})
 
@@ -104,7 +102,7 @@ func (c *FakeUnitedDeployments) Update(ctx context.Context, unitedDeployment *v1
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeUnitedDeployments) UpdateStatus(ctx context.Context, unitedDeployment *v1alpha1.UnitedDeployment, opts v1.UpdateOptions) (*v1alpha1.UnitedDeployment, error) {
+func (c *FakeUnitedDeployments) UpdateStatus(unitedDeployment *v1alpha1.UnitedDeployment) (*v1alpha1.UnitedDeployment, error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateSubresourceAction(uniteddeploymentsResource, "status", c.ns, unitedDeployment), &v1alpha1.UnitedDeployment{})
 
@@ -115,7 +113,7 @@ func (c *FakeUnitedDeployments) UpdateStatus(ctx context.Context, unitedDeployme
 }
 
 // Delete takes name of the unitedDeployment and deletes it. Returns an error if one occurs.
-func (c *FakeUnitedDeployments) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeUnitedDeployments) Delete(name string, options *v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewDeleteAction(uniteddeploymentsResource, c.ns, name), &v1alpha1.UnitedDeployment{})
 
@@ -123,15 +121,15 @@ func (c *FakeUnitedDeployments) Delete(ctx context.Context, name string, opts v1
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeUnitedDeployments) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(uniteddeploymentsResource, c.ns, listOpts)
+func (c *FakeUnitedDeployments) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(uniteddeploymentsResource, c.ns, listOptions)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.UnitedDeploymentList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched unitedDeployment.
-func (c *FakeUnitedDeployments) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.UnitedDeployment, err error) {
+func (c *FakeUnitedDeployments) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha1.UnitedDeployment, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewPatchSubresourceAction(uniteddeploymentsResource, c.ns, name, pt, data, subresources...), &v1alpha1.UnitedDeployment{})
 

@@ -19,7 +19,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
 	time "time"
 
 	appsv1alpha1 "github.com/openyurtio/yurt-app-manager-api/pkg/yurtappmanager/apis/apps/v1alpha1"
@@ -61,13 +60,13 @@ func NewFilteredNodePoolInformer(client versioned.Interface, resyncPeriod time.D
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().NodePools().List(context.TODO(), options)
+				return client.AppsV1alpha1().NodePools().List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().NodePools().Watch(context.TODO(), options)
+				return client.AppsV1alpha1().NodePools().Watch(options)
 			},
 		},
 		&appsv1alpha1.NodePool{},
