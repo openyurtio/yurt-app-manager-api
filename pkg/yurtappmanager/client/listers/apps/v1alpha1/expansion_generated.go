@@ -29,3 +29,15 @@ type UnitedDeploymentListerExpansion interface{}
 // UnitedDeploymentNamespaceListerExpansion allows custom methods to be added to
 // UnitedDeploymentNamespaceLister.
 type UnitedDeploymentNamespaceListerExpansion interface{}
+
+// YurtAppDaemonListerExpansion allows custom methods to be added to
+// YurtAppDaemonLister.
+type YurtAppDaemonListerExpansion interface{}
+
+// YurtAppDaemonNamespaceListerExpansion allows custom methods to be added to
+// YurtAppDaemonNamespaceLister.
+type YurtAppDaemonNamespaceListerExpansion interface{}
+
+// YurtIngressListerExpansion allows custom methods to be added to
+// YurtIngressLister.
+type YurtIngressListerExpansion interface{}
