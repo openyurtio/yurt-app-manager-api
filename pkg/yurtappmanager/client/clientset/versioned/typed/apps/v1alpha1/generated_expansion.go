@@ -21,3 +21,7 @@ package v1alpha1
 type NodePoolExpansion interface{}
 
 type UnitedDeploymentExpansion interface{}
+
+type YurtAppDaemonExpansion interface{}
+
+type YurtIngressExpansion interface{}
