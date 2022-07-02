@@ -35,20 +35,20 @@ const (
 	DeploymentTemplateType  TemplateType = "Deployment"
 )
 
-// UnitedDeploymentConditionType indicates valid conditions type of a UnitedDeployment.
-type UnitedDeploymentConditionType string
+// YurtAppSetConditionType indicates valid conditions type of a YurtAppSet.
+type YurtAppSetConditionType string
 
 const (
 	// PoolProvisioned means all the expected pools are provisioned and unexpected pools are deleted.
-	PoolProvisioned UnitedDeploymentConditionType = "PoolProvisioned"
+	PoolProvisioned YurtAppSetConditionType = "PoolProvisioned"
 	// PoolUpdated means all the pools are updated.
-	PoolUpdated UnitedDeploymentConditionType = "PoolUpdated"
-	// PoolFailure is added to a UnitedDeployment when one of its pools has failure during its own reconciling.
-	PoolFailure UnitedDeploymentConditionType = "PoolFailure"
+	PoolUpdated YurtAppSetConditionType = "PoolUpdated"
+	// PoolFailure is added to a YurtAppSet when one of its pools has failure during its own reconciling.
+	PoolFailure YurtAppSetConditionType = "PoolFailure"
 )
 
-// UnitedDeploymentSpec defines the desired state of UnitedDeployment.
-type UnitedDeploymentSpec struct {
+// YurtAppSetSpec defines the desired state of YurtAppSet.
+type YurtAppSetSpec struct {
 	// Selector is a label query over pods that should match the replica count.
 	// It must match the pod template's labels.
 	Selector *metav1.LabelSelector `json:"selector"`
@@ -67,8 +67,8 @@ type UnitedDeploymentSpec struct {
 	RevisionHistoryLimit *int32 `json:"revisionHistoryLimit,omitempty"`
 }
 
-// WorkloadTemplate defines the pool template under the UnitedDeployment.
-// UnitedDeployment will provision every pool based on one workload templates in WorkloadTemplate.
+// WorkloadTemplate defines the pool template under the YurtAppSet.
+// YurtAppSet will provision every pool based on one workload templates in WorkloadTemplate.
 // WorkloadTemplate now support statefulset and deployment
 // Only one of its members may be specified.
 type WorkloadTemplate struct {
@@ -83,22 +83,30 @@ type WorkloadTemplate struct {
 
 // StatefulSetTemplateSpec defines the pool template of StatefulSet.
 type StatefulSetTemplateSpec struct {
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +kubebuilder:validation:Schemaless
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              appsv1.StatefulSetSpec `json:"spec"`
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +kubebuilder:validation:Schemaless
+	Spec appsv1.StatefulSetSpec `json:"spec"`
 }
 
 // DeploymentTemplateSpec defines the pool template of Deployment.
 type DeploymentTemplateSpec struct {
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +kubebuilder:validation:Schemaless
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              appsv1.DeploymentSpec `json:"spec"`
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +kubebuilder:validation:Schemaless
+	Spec appsv1.DeploymentSpec `json:"spec"`
 }
 
-// Topology defines the spread detail of each pool under UnitedDeployment.
-// A UnitedDeployment manages multiple homogeneous workloads which are called pool.
-// Each of pools under the UnitedDeployment is described in Topology.
+// Topology defines the spread detail of each pool under YurtAppSet.
+// A YurtAppSet manages multiple homogeneous workloads which are called pool.
+// Each of pools under the YurtAppSet is described in Topology.
 type Topology struct {
 	// Contains the details of each pool. Each element in this array represents one pool
-	// which will be provisioned and managed by UnitedDeployment.
+	// which will be provisioned and managed by YurtAppSet.
 	// +optional
 	Pools []Pool `json:"pools,omitempty"`
 }
@@ -107,7 +115,7 @@ type Topology struct {
 type Pool struct {
 	// Indicates pool name as a DNS_LABEL, which will be used to generate
 	// pool workload name prefix in the format '<deployment-name>-<pool-name>-'.
-	// Name should be unique between all of the pools under one UnitedDeployment.
+	// Name should be unique between all of the pools under one YurtAppSet.
 	// Name is NodePool Name
 	Name string `json:"name"`
 
@@ -134,25 +142,25 @@ type Pool struct {
 	Patch *runtime.RawExtension `json:"patch,omitempty"`
 }
 
-// UnitedDeploymentStatus defines the observed state of UnitedDeployment.
-type UnitedDeploymentStatus struct {
-	// ObservedGeneration is the most recent generation observed for this UnitedDeployment. It corresponds to the
-	// UnitedDeployment's generation, which is updated on mutation by the API Server.
+// YurtAppSetStatus defines the observed state of YurtAppSet.
+type YurtAppSetStatus struct {
+	// ObservedGeneration is the most recent generation observed for this YurtAppSet. It corresponds to the
+	// YurtAppSet's generation, which is updated on mutation by the API Server.
 	// +optional
 	ObservedGeneration int64 `json:"observedGeneration,omitempty"`
 
-	// Count of hash collisions for the UnitedDeployment. The UnitedDeployment controller
+	// Count of hash collisions for the YurtAppSet. The YurtAppSet controller
 	// uses this field as a collision avoidance mechanism when it needs to
 	// create the name for the newest ControllerRevision.
 	// +optional
 	CollisionCount *int32 `json:"collisionCount,omitempty"`
 
-	// CurrentRevision, if not empty, indicates the current version of the UnitedDeployment.
+	// CurrentRevision, if not empty, indicates the current version of the YurtAppSet.
 	CurrentRevision string `json:"currentRevision"`
 
-	// Represents the latest available observations of a UnitedDeployment's current state.
+	// Represents the latest available observations of a YurtAppSet's current state.
 	// +optional
-	Conditions []UnitedDeploymentCondition `json:"conditions,omitempty"`
+	Conditions []YurtAppSetCondition `json:"conditions,omitempty"`
 
 	// Records the topology detail information of the replicas of each pool.
 	// +optional
@@ -169,10 +177,10 @@ type UnitedDeploymentStatus struct {
 	TemplateType TemplateType `json:"templateType"`
 }
 
-// UnitedDeploymentCondition describes current state of a UnitedDeployment.
-type UnitedDeploymentCondition struct {
+// YurtAppSetCondition describes current state of a YurtAppSet.
+type YurtAppSetCondition struct {
 	// Type of in place set condition.
-	Type UnitedDeploymentConditionType `json:"type,omitempty"`
+	Type YurtAppSetConditionType `json:"type,omitempty"`
 
 	// Status of the condition, one of True, False, Unknown.
 	Status corev1.ConditionStatus `json:"status,omitempty"`
@@ -190,29 +198,29 @@ type UnitedDeploymentCondition struct {
 // +genclient
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:shortName=ud
+// +kubebuilder:resource:shortName=yas
 // +kubebuilder:printcolumn:name="READY",type="integer",JSONPath=".status.readyReplicas",description="The number of pods ready."
 // +kubebuilder:printcolumn:name="WorkloadTemplate",type="string",JSONPath=".status.templateType",description="The WorkloadTemplate Type."
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC."
 
-// UnitedDeployment is the Schema for the uniteddeployments API
-type UnitedDeployment struct {
+// YurtAppSet is the Schema for the yurtAppSets API
+type YurtAppSet struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   UnitedDeploymentSpec   `json:"spec,omitempty"`
-	Status UnitedDeploymentStatus `json:"status,omitempty"`
+	Spec   YurtAppSetSpec   `json:"spec,omitempty"`
+	Status YurtAppSetStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// UnitedDeploymentList contains a list of UnitedDeployment
-type UnitedDeploymentList struct {
+// YurtAppSetList contains a list of YurtAppSet
+type YurtAppSetList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []UnitedDeployment `json:"items"`
+	Items           []YurtAppSet `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&UnitedDeployment{}, &UnitedDeploymentList{})
+	SchemeBuilder.Register(&YurtAppSet{}, &YurtAppSetList{})
 }

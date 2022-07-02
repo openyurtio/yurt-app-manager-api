@@ -1,5 +1,5 @@
 /*
-Copyright 2021 The OpenYurt Authors.
+Copyright 2020 The OpenYurt Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// UnitedDeploymentInformer provides access to a shared informer and lister for
-// UnitedDeployments.
-type UnitedDeploymentInformer interface {
+// YurtAppSetInformer provides access to a shared informer and lister for
+// YurtAppSets.
+type YurtAppSetInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.UnitedDeploymentLister
+	Lister() v1alpha1.YurtAppSetLister
 }
 
-type unitedDeploymentInformer struct {
+type yurtAppSetInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewUnitedDeploymentInformer constructs a new informer for UnitedDeployment type.
+// NewYurtAppSetInformer constructs a new informer for YurtAppSet type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewUnitedDeploymentInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredUnitedDeploymentInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewYurtAppSetInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredYurtAppSetInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredUnitedDeploymentInformer constructs a new informer for UnitedDeployment type.
+// NewFilteredYurtAppSetInformer constructs a new informer for YurtAppSet type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredUnitedDeploymentInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredYurtAppSetInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().UnitedDeployments(namespace).List(context.TODO(), options)
+				return client.AppsV1alpha1().YurtAppSets(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().UnitedDeployments(namespace).Watch(context.TODO(), options)
+				return client.AppsV1alpha1().YurtAppSets(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&appsv1alpha1.UnitedDeployment{},
+		&appsv1alpha1.YurtAppSet{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *unitedDeploymentInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredUnitedDeploymentInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *yurtAppSetInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredYurtAppSetInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *unitedDeploymentInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1alpha1.UnitedDeployment{}, f.defaultInformer)
+func (f *yurtAppSetInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&appsv1alpha1.YurtAppSet{}, f.defaultInformer)
 }
 
-func (f *unitedDeploymentInformer) Lister() v1alpha1.UnitedDeploymentLister {
-	return v1alpha1.NewUnitedDeploymentLister(f.Informer().GetIndexer())
+func (f *yurtAppSetInformer) Lister() v1alpha1.YurtAppSetLister {
+	return v1alpha1.NewYurtAppSetLister(f.Informer().GetIndexer())
 }
