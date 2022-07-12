@@ -20,3 +20,7 @@ all: generate-client
 generate-client:
 	hack/generate_client.sh
 	go mod tidy
+
+.PHONY: test
+test:
+	go test ./test/... -coverprofile cover.out
