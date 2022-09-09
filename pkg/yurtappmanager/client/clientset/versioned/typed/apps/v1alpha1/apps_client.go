@@ -1,5 +1,5 @@
 /*
-Copyright 2021 The OpenYurt Authors.
+Copyright 2020 The OpenYurt Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ type AppsV1alpha1Interface interface {
 	NodePoolsGetter
 	UnitedDeploymentsGetter
 	YurtAppDaemonsGetter
+	YurtAppSetsGetter
 	YurtIngressesGetter
 }
 
@@ -47,6 +48,10 @@ func (c *AppsV1alpha1Client) UnitedDeployments(namespace string) UnitedDeploymen
 
 func (c *AppsV1alpha1Client) YurtAppDaemons(namespace string) YurtAppDaemonInterface {
 	return newYurtAppDaemons(c, namespace)
+}
+
+func (c *AppsV1alpha1Client) YurtAppSets(namespace string) YurtAppSetInterface {
+	return newYurtAppSets(c, namespace)
 }
 
 func (c *AppsV1alpha1Client) YurtIngresses() YurtIngressInterface {

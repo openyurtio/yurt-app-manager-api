@@ -1,5 +1,5 @@
 /*
-Copyright 2021 The OpenYurt Authors.
+Copyright 2020 The OpenYurt Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -59,6 +59,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().UnitedDeployments().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("yurtappdaemons"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().YurtAppDaemons().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("yurtappsets"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().YurtAppSets().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("yurtingresses"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().YurtIngresses().Informer()}, nil
 

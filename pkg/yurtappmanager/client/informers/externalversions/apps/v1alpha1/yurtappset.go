@@ -32,58 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// YurtIngressInformer provides access to a shared informer and lister for
-// YurtIngresses.
-type YurtIngressInformer interface {
+// YurtAppSetInformer provides access to a shared informer and lister for
+// YurtAppSets.
+type YurtAppSetInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.YurtIngressLister
+	Lister() v1alpha1.YurtAppSetLister
 }
 
-type yurtIngressInformer struct {
+type yurtAppSetInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
+	namespace        string
 }
 
-// NewYurtIngressInformer constructs a new informer for YurtIngress type.
+// NewYurtAppSetInformer constructs a new informer for YurtAppSet type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewYurtIngressInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredYurtIngressInformer(client, resyncPeriod, indexers, nil)
+func NewYurtAppSetInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredYurtAppSetInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredYurtIngressInformer constructs a new informer for YurtIngress type.
+// NewFilteredYurtAppSetInformer constructs a new informer for YurtAppSet type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredYurtIngressInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredYurtAppSetInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().YurtIngresses().List(context.TODO(), options)
+				return client.AppsV1alpha1().YurtAppSets(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().YurtIngresses().Watch(context.TODO(), options)
+				return client.AppsV1alpha1().YurtAppSets(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&appsv1alpha1.YurtIngress{},
+		&appsv1alpha1.YurtAppSet{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *yurtIngressInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredYurtIngressInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *yurtAppSetInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredYurtAppSetInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *yurtIngressInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1alpha1.YurtIngress{}, f.defaultInformer)
+func (f *yurtAppSetInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&appsv1alpha1.YurtAppSet{}, f.defaultInformer)
 }
 
-func (f *yurtIngressInformer) Lister() v1alpha1.YurtIngressLister {
-	return v1alpha1.NewYurtIngressLister(f.Informer().GetIndexer())
+func (f *yurtAppSetInformer) Lister() v1alpha1.YurtAppSetLister {
+	return v1alpha1.NewYurtAppSetLister(f.Informer().GetIndexer())
 }

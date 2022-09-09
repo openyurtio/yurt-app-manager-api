@@ -1,5 +1,5 @@
 /*
-Copyright 2021 The OpenYurt Authors.
+Copyright 2020 The OpenYurt Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,6 +37,14 @@ type YurtAppDaemonListerExpansion interface{}
 // YurtAppDaemonNamespaceListerExpansion allows custom methods to be added to
 // YurtAppDaemonNamespaceLister.
 type YurtAppDaemonNamespaceListerExpansion interface{}
+
+// YurtAppSetListerExpansion allows custom methods to be added to
+// YurtAppSetLister.
+type YurtAppSetListerExpansion interface{}
+
+// YurtAppSetNamespaceListerExpansion allows custom methods to be added to
+// YurtAppSetNamespaceLister.
+type YurtAppSetNamespaceListerExpansion interface{}
 
 // YurtIngressListerExpansion allows custom methods to be added to
 // YurtIngressLister.

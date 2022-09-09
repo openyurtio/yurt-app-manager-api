@@ -1,5 +1,5 @@
 /*
-Copyright 2021 The OpenYurt Authors.
+Copyright 2020 The OpenYurt Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,5 +23,7 @@ type NodePoolExpansion interface{}
 type UnitedDeploymentExpansion interface{}
 
 type YurtAppDaemonExpansion interface{}
+
+type YurtAppSetExpansion interface{}
 
 type YurtIngressExpansion interface{}
